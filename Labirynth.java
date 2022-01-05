@@ -1,29 +1,36 @@
-import utils.Directions;
-import utils.IntPair;
-
-import java.util.Stack;
-import java.util.Random;
+//import java.util.Stack;
+//import java.util.Random;
 
 public class Labirynth {
-	private boolean grid[][][];
+	private int     width     = 0;
+	private int     height    = 0;
+	private Cell    begin     = null;
+	private Cell    end       = null;
+	private Cell    grid[][]  = null;
+	private boolean completed = false; // is solved?
 	
-	private final int width;
-	private final int height;
-	private final IntPair start;
-	private final IntPair stop;
-
-
-	public Labirynth(int width, int height) {
-		this.grid = new boolean[width][height][4];
-
-		this.width = width;
+	public Labirynth() {
+		
+	}
+	
+	public void generate(int width, int height) {
+		this.width  = width;
 		this.height = height;
-
-		this.start = new IntPair(0, 0);
-		this.stop = new IntPair(width - 1, height - 1);
+		this.grid   = new Cell[width][height];
+		
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++)
+				this.grid[i][j] = new Cell(i, j, CellType.WALL);
+		}
+		
+		this.begin  = this.grid[0][0]; // have to be changed
+		this.end    = this.grid[width - 1][height - 1]; // have to be changed
+		
+		this.begin.setType(CellType.ROUTE);
+		this.end.setType(CellType.CORRECT);
 
 		// Maze generation happens here:
-		Stack <IntPair> stack = new Stack<IntPair>();
+		/*Stack <IntPair> stack = new Stack<IntPair>();
 		boolean[][] visited = new boolean[width][height];
 		Random rand = new Random();
 
@@ -56,12 +63,11 @@ public class Labirynth {
 						System.out.println(Directions.getString(d));
 				}
 			}
-		}
+		}*/
 	}
-
-	@Override
-	public String toString() {
-		
+	
+	/*
+	public void solve() {
 		int newWidth = 2 * width + 1;
 		int newHeight = 2 * height + 1;
 		char[][] maze = new char[newWidth][newHeight];
@@ -79,7 +85,6 @@ public class Labirynth {
 						maze[x][y] = ' ';
 				}
 			}
-			
 		}
 
 		for(int x = 1; x < newHeight; x += 2) {
@@ -105,16 +110,23 @@ public class Labirynth {
 
 		return s;
 	}
+	*/
 
-	public boolean onGrid(IntPair cell) {
-		return (0 <= cell.first()  && cell.first() < width &&
-				0 <= cell.second() && cell.second() < height);
+	@Override
+	public String toString() {
+		StringBuilder str = new StringBuilder();
+		for (int i = 0; i < this.height; i++) {
+			for (int j = 0; j < this.width; j++) {
+				str.append(this.grid[i][j]);
+			}
+			str.append("\n");
+		}
+		return str.toString();
 	}
 
 	public static void main(String[] args) {
-		Labirynth labirynth = new Labirynth(10, 10);
-		System.out.println(labirynth);
-
-
+		Labirynth lab = new Labirynth();
+		lab.generate(10, 10);
+		System.out.println(lab);
 	}
 }
