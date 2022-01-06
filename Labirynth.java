@@ -1,132 +1,140 @@
-//import java.util.Stack;
-//import java.util.Random;
+import java.util.Stack;
+import java.util.Random;
+import java.util.Queue;
+import java.util.LinkedList;
 
 public class Labirynth {
-	private int     width     = 0;
-	private int     height    = 0;
-	private Cell    begin     = null;
-	private Cell    end       = null;
+	private int     width 	  = 0;
+	private int     height 	  = 0;
+	private Cell    begin 	  = null;
+	private Cell    end 	  = null;
 	private Cell    grid[][]  = null;
 	private boolean completed = false; // is solved?
 	
-	public Labirynth() {
-		
-	}
-	
-	public void generate(int width, int height) {
-		this.width  = width;
-		this.height = height;
-		this.grid   = new Cell[width][height];
-		
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++)
+	public Labirynth(int width, int height) {
+		this.width = 2 * width - 1;	
+		this.height = 2 * height - 1;
+
+		this.grid = new Cell[this.width][this.height];
+
+		for (int i = 0; i < this.width; i++) {
+			for (int j = 0; j < this.height; j++)
 				this.grid[i][j] = new Cell(i, j, CellType.WALL);
 		}
-		
+
 		this.begin  = this.grid[0][0]; // have to be changed
-		this.end    = this.grid[width - 1][height - 1]; // have to be changed
-		
 		this.begin.setType(CellType.ROUTE);
-		this.end.setType(CellType.CORRECT);
 
-		// Maze generation happens here:
-		/*Stack <IntPair> stack = new Stack<IntPair>();
-		boolean[][] visited = new boolean[width][height];
-		Random rand = new Random();
+		this.end 	= this.grid[this.width - 1][this.height - 1];
+		this.end.setType(CellType.ROUTE);
+	}
+	
+	public Labirynth() {
 
-		stack.push(start);
+	}
+
+	public void generate() {
+
+		Stack <Cell> stack = new Stack<Cell>();
+		Random rand = new Random(); // We can pass seed here
+		
+		int maxStackSize = 2;
+
+		stack.push(this.begin);
 		while(stack.size() != 0) {
-			IntPair v = stack.pop();
-			visited[v.first()][v.second()] = true;
-			int random = rand.nextInt(5);
+			//System.out.println(stack);
+			Cell v = stack.pop();
+			
+			if(stack.size() > maxStackSize && (v.x == 0 || v.y == 0 || v.y == height - 1 || v.x == width - 1)){
+				this.end = v;
+				maxStackSize = stack.size();
+			}
 
-			for(int direction = 0; direction < 4; direction++) {
-				direction = (random + direction) % 4;
-				//System.out.println(Directions.getString(direction));
-				IntPair u = Directions.moveCell(v, direction);
-				if (onGrid(u) && !visited[u.first()][u.second()]) {
+			grid[v.x][v.y].setType(CellType.ROUTE);
+			v.visit();
+			int offset = rand.nextInt(Direction.LENGTH + 1);
+			for(int direction = 0; direction < Direction.LENGTH; direction++) {		
+				Cell u = null;
+				switch((offset + direction) % Direction.LENGTH) {
+					case Direction.UP:
+						if(v.y > 1){
+							u = grid[  v.x  ][v.y - 2];
+						}
+					break;
+
+					case Direction.RIGHT:
+						if(width - 2 > v.x){
+							u = grid[v.x + 2][  v.y  ];
+						}
+					break;
+
+					case Direction.DOWN:
+						if(height - 2 > v.y){
+							u = grid[  v.x  ][v.y + 2];
+						}
+					break;
+
+					case Direction.LEFT:
+						if(v.x > 1){
+							u = grid[v.x - 2][  v.y  ];
+						}
+					break;
+				}
+				if (u != null && !u.isVisited()) {
+					grid[  (v.x + u.x)/2  ][(v.y + u.y)/2].setType(CellType.ROUTE);
+					u.setParent(v);
+					//System.out.println("(" + v.x + ", " + v.y + ") -> (" + u.x + ", " + u.y + ")");			
 					stack.push(v);
 					stack.push(u);
-					System.out.println(v + " -> " + u + " = " + Directions.getString(direction));
-					visited[u.first()][u.second()] = true;
-					grid[v.first()][v.second()][direction] = true;
-					grid[u.first()][u.second()][Directions.invertDirection(direction)] = true;
 					break;
 				}
 			}
 		}
-		for(int x = 0; x < width; x++) {
-			for(int y = 0; y < height; y++) {
-				System.out.println("(" + x + ", " + y + "):");
-				for(int d = 0; d < 4; d++) {
-					if(grid[x][y][d] == true)
-						System.out.println(Directions.getString(d));
-				}
-			}
-		}*/
+
 	}
 	
-	/*
+	
 	public void solve() {
-		int newWidth = 2 * width + 1;
-		int newHeight = 2 * height + 1;
-		char[][] maze = new char[newWidth][newHeight];
-		
-		for(int y = 0; y < newHeight; y++) {
-			if(y % 2 == 0) {
-				for(int x = 0; x < newHeight; x++) {
-					maze[x][y] = '▒';
-				}	
-			} else {
-				for(int x = 0; x < newHeight; x++) {
-					if(x % 2 == 0)
-						maze[x][y] = '▒';
-					else
-						maze[x][y] = ' ';
-				}
-			}
-		}
+		Cell cellNow = this.end;
 
-		for(int x = 1; x < newHeight; x += 2) {
-			for(int y = 1; y < newWidth; y += 2) {
-				for(int d = 0; d < 4	; d++) {
-					if(grid[x/2][y/2][d] == true) {
-						IntPair cell = new IntPair(x, y);
-						cell = Directions.moveCell(cell, d);
-						maze[cell.first()][cell.second()] = ' ';	
-					}
-				}
-				
-			}
+		while(cellNow != this.begin && cellNow != null) {
+			cellNow.setType(CellType.CORRECT);
+			cellNow = cellNow.getParent();
 		}
-
-		String s = "";
-		for (char[] row: maze) {
-			for(char cell: row) {
-				s += cell;
-			}
-			s += "\n";
-		}
-
-		return s;
+		this.begin.setType(CellType.CORRECT);
 	}
-	*/
+	
 
 	@Override
 	public String toString() {
 		StringBuilder str = new StringBuilder();
-		for (int i = 0; i < this.height; i++) {
-			for (int j = 0; j < this.width; j++) {
-				str.append(this.grid[i][j]);
-			}
-			str.append("\n");
+		for(int i = 0; i < this.width + 2; i++) {
+			str.append("#");
 		}
+		str.append("\n");
+		for (int i = 0; i < this.height; i++) {
+			str.append("#");
+			for (int j = 0; j < this.width; j++) {
+				str.append(this.grid[j][i]);
+			}
+			str.append("#\n");
+		}
+		for(int i = 0; i < this.width + 2; i++) {
+			str.append("#");
+		}
+		str.append("\nBEGIN: (");
+		str.append(this.begin.x); str.append(", "); str.append(this.begin.y); str.append(")\n");
+		str.append("\nEND: (");
+		str.append(this.end.x); str.append(", "); str.append(this.end.y); str.append(")\n");
 		return str.toString();
 	}
 
 	public static void main(String[] args) {
-		Labirynth lab = new Labirynth();
-		lab.generate(10, 10);
-		System.out.println(lab);
+		while(true) {
+			Labirynth lab = new Labirynth(10, 10);
+			lab.generate();
+			lab.solve();
+			System.out.println(lab);
+		}
 	}
 }
