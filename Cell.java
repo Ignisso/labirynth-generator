@@ -3,7 +3,7 @@ public class Cell {
 	public final int y;
 	private boolean  visited = false;
 	private CellType type    = CellType.WALL;
-	private Cell parent      = null;
+	private Cell     parent  = null;
 
     public Cell(int x, int y, CellType t) {
 		this.x = x;

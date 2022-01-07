@@ -22,10 +22,10 @@ public class Labirynth {
 				this.grid[i][j] = new Cell(i, j, CellType.WALL);
 		}
 
-		this.begin  = this.grid[1][1];
+		this.begin = this.grid[1][1];
 		this.begin.setType(CellType.ROUTE);
 
-		this.end 	= this.grid[this.width - 2][this.height - 2];
+		this.end = this.grid[this.width - 2][this.height - 2];
 		this.end.setType(CellType.ROUTE);
 	}
 	
@@ -123,7 +123,6 @@ public class Labirynth {
 			}
 			str.append("\n");
 		}
-
 		return str.toString();
 	}
 
