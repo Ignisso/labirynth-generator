@@ -113,7 +113,44 @@ public class Labirynth {
 		completed = true;
 	}
 	
+	public void writeToBitmap(String path) {
+		FileBMP bmp = new FileBMP();
+		bmp.load(this);
+		bmp.write(path);
+	}
+	
+	/**
+     * Getters and Setters
+     */
+    public void setCompleted(){
+    	this.completed = true;
+    }
+    
+    public void setEnd(Cell cell) {
+    	this.end = cell;
+    }
+    public Cell getEnd() {
+    	return this.end;
+    }
 
+    public void setBegin(Cell cell) {
+    	this.begin = cell;
+    }
+    public Cell getBegin() {
+    	return this.begin;
+    }
+
+    public Cell getCell(int x, int y) {
+    	return this.grid[x][y];
+    }
+
+    public int getWidth(){
+    	return this.width;
+    }
+    public int getHeight() {
+    	return this.height;
+    }
+	
 	@Override
 	public String toString() {
 		StringBuilder str = new StringBuilder();
@@ -127,9 +164,10 @@ public class Labirynth {
 	}
 
 	public static void main(String[] args) {
-		Labirynth lab = new Labirynth(10, 10);
+		Labirynth lab = new Labirynth(3900, 3900);
 		lab.generate();
 		lab.solve();
-		System.out.println(lab);	
+		//System.out.println(lab);
+		lab.writeToBitmap("../test.bmp");
 	}
 }

@@ -4,22 +4,22 @@ public class BMPHeader {
 	struct BITMAPFILEHEADER
 	sizeof 14
 	*/
-	private short bfType;
-	private int   bfSize;
-	private short bfReserved1;
-	private short bfReserved2;
-	private int   bfOffBits;
+	private short  bfType;
+	private int    bfSize;
+	private short  bfReserved1;
+	private short  bfReserved2;
+	private int    bfOffBits;
 	/*
 	struct BITMAPCOREHEADER
 	sizeof 12
 	*/
-	private int   bcSize;
-	private short bcWidth;
-	private short bcHeight;
-	private short bcPlanes;
-	private short bcBitCount;
+	private int    bcSize;
+	private short  bcWidth;
+	private short  bcHeight;
+	private short  bcPlanes;
+	private short  bcBitCount;
 	/* data bytes */
-	byte[] data = new byte[SIZE];
+	private byte[] data = new byte[SIZE];
 	
 	
 	
@@ -73,6 +73,10 @@ public class BMPHeader {
 	
 	public short getHeight() {
 		return this.bcHeight;
+	}
+	
+	public byte[] getData() {
+		return this.data;
 	}
 	
 	@Override

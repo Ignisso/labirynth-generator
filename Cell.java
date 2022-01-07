@@ -23,6 +23,10 @@ public class Cell {
 		this.type = t;
 	}
 	
+	public CellType getType() {
+		return this.type;
+	}
+	
 	public boolean isVisited() {
 		return this.visited;
 	}
