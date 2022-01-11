@@ -17,6 +17,12 @@ public class BMPInfo {
 			this.rgbRed = (byte)(color >> 16);
 		}
 		
+		public void setBytes(byte[] data, int offset) {
+			data[offset]     = this.rgbBlue;
+			data[offset + 1] = this.rgbGreen;
+			data[offset + 2] = this.rgbRed;
+		}
+		
 		@Override
 		public String toString() {
 			StringBuilder sb = new StringBuilder();
@@ -39,7 +45,6 @@ public class BMPInfo {
 		this.header = new BMPHeader();
 		this.header.setHeader(width, height);
 		int size = (width + 1) * height;
-		System.out.println(size);
 		this.bitmap = new RGB[size];
 		for (int i = 0; i < size; i++)
 			this.bitmap[i] = new RGB();
@@ -48,6 +53,20 @@ public class BMPInfo {
 	public void setPixel(int x, int y, int color) {
 		int offset = (header.getWidth() + 1) * (header.getHeight() - y - 1) + x;
 		this.bitmap[offset].set(color);
+	}
+	
+	public byte[] getBitmap() {
+		int size = 26 + this.bitmap.length * 3;
+		byte[] data = new byte[size];
+		for (int i = 0; i < 26; i++) {
+			data[i] = this.header.getData()[i];
+		}
+		int offset = 26;
+		for (RGB p : this.bitmap) {
+			p.setBytes(data, offset);
+			offset += 3;
+		}
+		return data;
 	}
 	
 	@Override

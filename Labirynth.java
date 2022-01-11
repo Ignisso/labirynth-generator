@@ -52,8 +52,14 @@ public class Labirynth {
         Solver mazeSolver = new Solver(this);
         mazeSolver.solve();
     }
-
-    /**
+	
+	public void writeToBitmap(String path) {
+		FileBMP bmp = new FileBMP();
+		bmp.load(this);
+		bmp.write(path);
+	}
+	
+	/**
      * Getters and Setters
      */
     public void setCompleted(){

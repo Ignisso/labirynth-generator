@@ -27,6 +27,10 @@ public class Cell {
 		return this.type;
 	}
 	
+	public CellType getType() {
+		return this.type;
+	}
+	
 	public boolean isVisited() {
 		return this.visited;
 	}
