@@ -22,6 +22,10 @@ public class Cell {
 	public void setType(CellType t) {
 		this.type = t;
 	}
+
+	public CellType getType() {
+		return this.type;
+	}
 	
 	public CellType getType() {
 		return this.type;

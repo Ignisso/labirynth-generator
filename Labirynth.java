@@ -1,15 +1,19 @@
-import java.util.Stack;
 import java.util.Random;
-import java.util.Queue;
-import java.util.LinkedList;
 
 public class Labirynth {
-	private int     width 	  = 0;
+    
+    private int     width 	  = 0;
 	private int     height 	  = 0;
 	private Cell    begin 	  = null;
 	private Cell    end 	  = null;
 	private Cell    grid[][]  = null;
 	private boolean completed = false;
+	
+	/**
+	 * Constructor for class Labirynth
+	 * @param width - width of the Labirynth in vertices
+	 * @param height - height of the Labirynth in vertices
+	 */ 
 	
 	public Labirynth(int width, int height) {
 		this.width = 2 * width - 1;	
@@ -24,94 +28,30 @@ public class Labirynth {
 
 		this.begin = this.grid[1][1];
 		this.begin.setType(CellType.ROUTE);
-
-		this.end = this.grid[this.width - 2][this.height - 2];
-		this.end.setType(CellType.ROUTE);
-	}
-	
-	public Labirynth() {
-
 	}
 
-	public void generate() {
+	/**
+	 *  Generates Labirytnth
+	 *  @param seed [optional] - generates Labirynth using gives seed
+	 */
 
-		Stack <Cell> stack = new Stack<Cell>();
-		Random rand = new Random(); // We can pass seed here
-		
-		int maxStackSize = 2;
+    public void generateLabirynth(long seed) {
+    	Generator mazeGenerator = new Generator(this, seed);
+        mazeGenerator.generate();
+    }
 
-		stack.push(this.begin);
-		while(stack.size() != 0) {
+    public void generateLabirynth() {
+    	Generator mazeGenerator = new Generator(this, new Random().nextLong());
+        mazeGenerator.generate();
+    }
 
-			Cell v = stack.pop();
-			
-			// Move end to the end of path
-			if(stack.size() > maxStackSize && (v.x == 1 || v.y == 1 || v.y == height - 2 || v.x == width - 2)){
-				this.end = v;
-				maxStackSize = stack.size();
-
-			}
-
-			grid[v.x][v.y].setType(CellType.ROUTE);
-			v.visit();
-
-			int offset = rand.nextInt(Direction.LENGTH + 1);
-			for(int direction = 0; direction < Direction.LENGTH; direction++) {		
-				Cell u = null;
-				switch((offset + direction) % Direction.LENGTH) {
-					case Direction.UP:
-						if(v.y > 1){
-							u = grid[v.x][v.y - 2];
-						}
-					break;
-
-					case Direction.RIGHT:
-						if(width - 2 > v.x){
-							u = grid[v.x + 2][v.y];
-						}
-					break;
-
-					case Direction.DOWN:
-						if(height - 2 > v.y){
-							u = grid[v.x][v.y + 2];
-						}
-					break;
-
-					case Direction.LEFT:
-						if(v.x > 1){
-							u = grid[v.x - 2][v.y];
-						}
-					break;
-				}
-
-				if(u == null || u.isVisited())
-					continue;
-
-				if(u.x != 0 && u.x != width - 1 && u.y != 0 && u.y != height - 1)
-				{
-					grid[(v.x + u.x)/2][(v.y + u.y)/2].setType(CellType.ROUTE);
-					u.setParent(v);		
-					stack.push(v);
-					stack.push(u);
-					break;
-				}
-
-			}
-		}
-
-	}
-	
-	
-	public void solve() {
-		Cell cellNow = this.end;
-		while(cellNow != this.begin && cellNow != null) {
-			cellNow.setType(CellType.CORRECT);
-			cellNow = cellNow.getParent();
-		}
-
-		this.begin.setType(CellType.CORRECT);
-		completed = true;
-	}
+    /**
+     * Solves Labirynth
+     */
+    public void solveLabirynth() {
+        Solver mazeSolver = new Solver(this);
+        mazeSolver.solve();
+    }
 	
 	public void writeToBitmap(String path) {
 		FileBMP bmp = new FileBMP();
@@ -150,7 +90,7 @@ public class Labirynth {
     public int getHeight() {
     	return this.height;
     }
-	
+
 	@Override
 	public String toString() {
 		StringBuilder str = new StringBuilder();
@@ -164,10 +104,9 @@ public class Labirynth {
 	}
 
 	public static void main(String[] args) {
-		Labirynth lab = new Labirynth(3900, 3900);
-		lab.generate();
-		lab.solve();
-		//System.out.println(lab);
-		lab.writeToBitmap("../test.bmp");
+		Labirynth lab = new Labirynth(10, 10);
+		lab.generateLabirynth();
+		lab.solveLabirynth();
+		System.out.println(lab);	
 	}
 }
