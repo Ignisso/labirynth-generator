@@ -2,11 +2,11 @@ public class FileText
 implements FileIO {
 	Labirynth maze;
 	
-	public FileIO() {
+	public FileIO(Labirynth maze) {
 		this.maze = null;
 	}
 	
-	public void load(Labirynth maze) {
+	public void load() {
 		this.maze = maze;
 	}
 	

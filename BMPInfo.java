@@ -1,40 +1,6 @@
 public class BMPInfo {
-	private class RGB {
-		byte rgbBlue;
-		byte rgbGreen;
-		byte rgbRed;
-		
-		public static int SIZE = 3;
-		public RGB() {
-			this.rgbBlue  = 0;
-			this.rgbGreen = 0;
-			this.rgbRed   = 0;
-		}
-		
-		public void set(int color) {
-			this.rgbBlue = (byte)(color);
-			this.rgbGreen = (byte)(color >> 8);
-			this.rgbRed = (byte)(color >> 16);
-		}
-		
-		public void setBytes(byte[] data, int offset) {
-			data[offset]     = this.rgbBlue;
-			data[offset + 1] = this.rgbGreen;
-			data[offset + 2] = this.rgbRed;
-		}
-		
-		@Override
-		public String toString() {
-			StringBuilder sb = new StringBuilder();
-			sb.append(String.format("%02X", rgbBlue));
-			sb.append(String.format("%02X", rgbGreen));
-			sb.append(String.format("%02X", rgbRed));
-			return sb.toString();
-		}
-	}
-	
 	private BMPHeader header;
-	private RGB[] bitmap;
+	private RGB[]     bitmap;
 	
 	BMPInfo() {
 		this.header = null;
@@ -50,23 +16,53 @@ public class BMPInfo {
 			this.bitmap[i] = new RGB();
 	}
 	
-	public void setPixel(int x, int y, int color) {
+	public void setPixelAt(int x, int y, int color) {
 		int offset = (header.getWidth() + 1) * (header.getHeight() - y - 1) + x;
-		this.bitmap[offset].set(color);
+		this.bitmap[offset].setColor(color);
 	}
 	
-	public byte[] getBitmap() {
-		int size = 26 + this.bitmap.length * 3;
+	public int getPixelAt(int x, int y) {
+		int offset = (header.getWidth() + 1) * (header.getHeight() - y - 1) + x;
+		return this.bitmap[offset].getColor();
+	}
+
+	public byte[] getBytes() {
+		int size = BMPHeader.SIZE + this.bitmap.length * 3;
 		byte[] data = new byte[size];
-		for (int i = 0; i < 26; i++) {
+		for (int i = 0; i < BMPHeader.SIZE; i++) {
 			data[i] = this.header.getData()[i];
 		}
-		int offset = 26;
+		int offset = BMPHeader.SIZE;
 		for (RGB p : this.bitmap) {
 			p.setBytes(data, offset);
 			offset += 3;
 		}
 		return data;
+	}
+
+	public short getWidth() {
+		return this.header.getWidth();
+	}
+	
+	public short getHeight() {
+		return this.header.getHeight();
+	}
+
+	public void loadHeader(byte[] b) {
+		this.header = new BMPHeader();
+		this.header.load(b);
+		this.setInfo(header.getWidth(), header.getHeight());
+	}
+
+	public void load(byte[] b) {
+		int size = (this.header.getWidth() + 1) * this.header.getHeight();
+		for (int i = 0; i < size; i++) {
+			int color = 0;
+			color |= ((b[BMPHeader.SIZE + i * 3] & 0xff) << 16);
+			color |= ((b[BMPHeader.SIZE + i * 3 + 1] & 0xff) << 8);
+			color |= (b[BMPHeader.SIZE + i * 3 + 2] & 0xff);
+			this.bitmap[i].setColor(color);
+		}
 	}
 	
 	@Override

@@ -1,5 +1,5 @@
 public class BMPHeader {
-	public static int SIZE = 26;
+	public static final int SIZE = 26;
 	/*
 	struct BITMAPFILEHEADER
 	sizeof 14
@@ -77,6 +77,18 @@ public class BMPHeader {
 	
 	public byte[] getData() {
 		return this.data;
+	}
+
+	public void load(byte[] b) {
+		this.bcWidth = 0;
+		this.bcWidth |= (b[19] & 0x00ff);
+		this.bcWidth <<= 8;
+		this.bcWidth |= (b[18] & 0x00ff);
+		this.bcHeight = 0;
+		this.bcHeight |= (b[21] & 0x00ff);
+		this.bcHeight <<= 8;
+		this.bcHeight |= (b[20] & 0x00ff);
+		setHeader(bcWidth, bcHeight);
 	}
 	
 	@Override

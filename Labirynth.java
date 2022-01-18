@@ -4,9 +4,9 @@ public class Labirynth {
     
     private int     width 	  = 0;
 	private int     height 	  = 0;
+	private Cell    grid[][]  = null;
 	private Cell    begin 	  = null;
 	private Cell    end 	  = null;
-	private Cell    grid[][]  = null;
 	private boolean completed = false;
 	
 	/**
@@ -28,6 +28,22 @@ public class Labirynth {
 
 		this.begin = this.grid[1][1];
 		this.begin.setType(CellType.ROUTE);
+	}
+
+	public Labirynth() {
+
+	}
+
+	public void reset() {
+		if (this.completed == false)
+			return;
+		for (int i = 0; i < this.width; i++) {
+			for (int j = 0; j < this.height; j++) {
+				if (this.grid[i][j].getType() == CellType.CORRECT)
+					this.grid[i][j].setType(CellType.ROUTE);
+			}
+		}
+		this.completed = false;
 	}
 
 	/**
@@ -54,21 +70,27 @@ public class Labirynth {
     }
 	
 	public void writeToBitmap(String path) {
-		FileBMP bmp = new FileBMP();
-		bmp.load(this);
+		FileBMP bmp = new FileBMP(this);
+		bmp.load();
 		bmp.write(path);
+	}
+
+	public void readFromBitmap(String path) {
+		FileBMP bmp = new FileBMP(this);
+		bmp.read(path);
 	}
 	
 	/**
      * Getters and Setters
      */
-    public void setCompleted(){
+    public void setCompleted() {
     	this.completed = true;
     }
     
     public void setEnd(Cell cell) {
     	this.end = cell;
     }
+    
     public Cell getEnd() {
     	return this.end;
     }
@@ -76,6 +98,7 @@ public class Labirynth {
     public void setBegin(Cell cell) {
     	this.begin = cell;
     }
+
     public Cell getBegin() {
     	return this.begin;
     }
@@ -84,9 +107,28 @@ public class Labirynth {
     	return this.grid[x][y];
     }
 
-    public int getWidth(){
+    public void setSize(int width, int height) {
+    	this.width = width;
+    	this.height = height;
+    	this.grid = new Cell[this.width][this.height];
+
+		for (int i = 0; i < this.width; i++) {
+			for (int j = 0; j < this.height; j++)
+				this.grid[i][j] = new Cell(i, j, CellType.WALL);
+		}
+    }
+
+    public void setGrid(Cell arr[][]) {
+    	for (int i = 0; i < this.width; i++) {
+    		for (int j = 0; j < this.height; j++)
+    			this.grid[i][j] = arr[i][j];
+    	}
+    }
+
+    public int getWidth() {
     	return this.width;
     }
+
     public int getHeight() {
     	return this.height;
     }
@@ -104,9 +146,13 @@ public class Labirynth {
 	}
 
 	public static void main(String[] args) {
-		Labirynth lab = new Labirynth(10, 10);
+		Labirynth lab = new Labirynth(2000, 2000);
 		lab.generateLabirynth();
 		lab.solveLabirynth();
-		System.out.println(lab);	
+		lab.writeToBitmap("../maze.bmp");
+		Labirynth rlab = new Labirynth();
+		rlab.readFromBitmap("../maze.bmp");
+		rlab.writeToBitmap("../maze2.bmp");
+		//System.out.println(lab);	
 	}
 }
