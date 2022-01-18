@@ -37,10 +37,8 @@ public class Generator {
 
 			Cell v = stack.pop();
 			
-			if(stack.size() > maxStackSize && (v.x == 1 || v.y == 1 || v.y == height - 2 || v.x == width - 2)){
-				maze.setEnd(v);
+			if(stack.size() > maxStackSize && (v.x == 1 || v.y == 1 || v.y == height - 2 || v.x == width - 2)) {
 				maxStackSize = stack.size();
-
 			}
 
 			maze.getCell(v.x, v.y).setType(CellType.ROUTE);

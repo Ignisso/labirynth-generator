@@ -11,6 +11,7 @@ implements FileIO {
 	public static final int WALL_COLOR = 0x000000;
 	public static final int ROUTE_COLOR = 0xffffff;
 	public static final int CORRECT_COLOR = 0x00ff00;
+	public static final int END_COLOR = 0xff0000;
 	
 	public FileBMP(Labirynth maze) {
 		this.maze   = maze;
@@ -28,6 +29,8 @@ implements FileIO {
 					this.bitmap.setPixelAt(i, j, WALL_COLOR);
 				else if (this.maze.getCell(i, j).getType() == CellType.CORRECT)
 					this.bitmap.setPixelAt(i, j, CORRECT_COLOR);
+				else if (this.maze.getCell(i, j).getType() == CellType.END)
+					this.bitmap.setPixelAt(i, j, END_COLOR);
 				else
 					this.bitmap.setPixelAt(i, j, ROUTE_COLOR);
 			}
@@ -82,6 +85,8 @@ implements FileIO {
 						grid[i][j] = new Cell(i, j, CellType.CORRECT);
 						this.maze.setCompleted();
 					}
+					else if (bitmap.getPixelAt(i, j) == END_COLOR)
+						grid[i][j] = new Cell(i, j, CellType.END);
 					else
 						grid[i][j] = new Cell(i, j, CellType.ROUTE);
 				}

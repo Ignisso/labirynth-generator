@@ -18,16 +18,12 @@ public class Solver {
         Cell cellNow = maze.getEnd();
         
         while(cellNow != null) {
-            
-            if(cellNow == maze.getBegin()) {
-                maze.getBegin().setType(CellType.CORRECT);
-                break;      
-            }
-
             cellNow.setType(CellType.CORRECT);
             cellNow = cellNow.getParent();
         }
         maze.setCompleted();
+        maze.getBegin().setType(CellType.END);
+        maze.getEnd().setType(CellType.END);
 
         return true;
     }

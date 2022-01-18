@@ -58,9 +58,11 @@ public class BMPInfo {
 		int size = (this.header.getWidth() + 1) * this.header.getHeight();
 		for (int i = 0; i < size; i++) {
 			int color = 0;
-			color |= ((b[BMPHeader.SIZE + i * 3] & 0xff) << 16);
-			color |= ((b[BMPHeader.SIZE + i * 3 + 1] & 0xff) << 8);
 			color |= (b[BMPHeader.SIZE + i * 3 + 2] & 0xff);
+			color <<= 8;
+			color |= (b[BMPHeader.SIZE + i * 3 + 1] & 0xff);
+			color <<= 8;
+			color |= (b[BMPHeader.SIZE + i * 3] & 0xff);
 			this.bitmap[i].setColor(color);
 		}
 	}
