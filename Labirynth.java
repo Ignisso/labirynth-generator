@@ -77,6 +77,14 @@ public class Labirynth {
 		FileBMP bmp = new FileBMP(this);
 		bmp.read(path);
 	}
+
+	public void clearVisits() {
+        for(Cell[] row: grid) {
+            for(Cell cell: row) {
+                cell.unvisit();
+            }
+        }
+	}
 	
 	/**
 	 * Getters and Setters
@@ -116,6 +124,37 @@ public class Labirynth {
 	public Cell getCell(int x, int y) {
 		return this.grid[x][y];
 	}
+
+	public Cell getCell(Cell v, int direction, int distance) {
+    	Cell u = null;
+    	switch(direction) {
+			case Direction.UP:
+				if(v.y >= distance){
+					u = this.getCell(v.x, v.y - distance);
+				}
+			break;
+
+			case Direction.RIGHT:
+				if(width - distance > v.x){
+					u = this.getCell(v.x + distance, v.y);
+				}
+			break;
+
+			case Direction.DOWN:
+				if(height - distance > v.y){
+					u = this.getCell(v.x, v.y + distance);
+				}
+			break;
+
+			case Direction.LEFT:
+				if(v.x >= distance){
+					u = this.getCell(v.x - distance, v.y);
+				}
+			break;
+		}
+
+		return u;
+    }
 	
 	public void setSize(int width, int height) {
 		this.width = width;
@@ -154,17 +193,5 @@ public class Labirynth {
 		}
 		return str.toString();
 	}
-	
-	public static void main(String[] args) {
-		Labirynth lab = new Labirynth(100, 100);
-		lab.generateLabirynth();
-		lab.setBegin(93, 54);
-		lab.setEnd(79, 20);
-		lab.solveLabirynth();
-		lab.writeToBitmap("../maze.bmp");
-		Labirynth rlab = new Labirynth();
-		rlab.readFromBitmap("../maze.bmp");
-		rlab.writeToBitmap("../maze2.bmp");
-		//System.out.println(lab);	
-	}
+
 }

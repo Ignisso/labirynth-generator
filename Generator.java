@@ -28,51 +28,19 @@ public class Generator {
     	int height = maze.getHeight();
 
 		Stack <Cell> stack = new Stack<Cell>();
-		Random rand = new Random(seed); // We can pass seed here
-		
-		int maxStackSize = 2;
+		Random rand = new Random(seed); // We can pass seed here		
 
-		stack.push(maze.getBegin());
+		stack.push(maze.getCell(1,1));
 		while(stack.size() != 0) {
 
 			Cell v = stack.pop();
 			
-			if(stack.size() > maxStackSize && (v.x == 1 || v.y == 1 || v.y == height - 2 || v.x == width - 2)) {
-				maxStackSize = stack.size();
-			}
-
 			maze.getCell(v.x, v.y).setType(CellType.ROUTE);
 			v.visit();
 
 			int offset = rand.nextInt(Direction.LENGTH + 1);
 			for(int direction = 0; direction < Direction.LENGTH; direction++) {		
-				Cell u = null;
-
-				switch((offset + direction) % Direction.LENGTH) {
-					case Direction.UP:
-						if(v.y > 1){
-							u = maze.getCell(v.x, v.y - 2);
-						}
-					break;
-
-					case Direction.RIGHT:
-						if(width - 2 > v.x){
-							u = maze.getCell(v.x + 2, v.y);
-						}
-					break;
-
-					case Direction.DOWN:
-						if(height - 2 > v.y){
-							u = maze.getCell(v.x, v.y + 2);
-						}
-					break;
-
-					case Direction.LEFT:
-						if(v.x > 1){
-							u = maze.getCell(v.x - 2, v.y);
-						}
-					break;
-				}
+				Cell u = maze.getCell(v, (offset + direction) % Direction.LENGTH, 2);
 
 				if(u == null || u.isVisited())
 					continue;
@@ -80,7 +48,6 @@ public class Generator {
 				if(u.x != 0 && u.x != width - 1 && u.y != 0 && u.y != height - 1)
 				{
 					maze.getCell((v.x + u.x)/2, (v.y + u.y)/2).setType(CellType.ROUTE);
-					u.setParent(v);		
 					stack.push(v);
 					stack.push(u);
 					break;
