@@ -50,12 +50,12 @@ public class Labirynth {
 	 *  @param seed [optional] - generates Labirynth using gives seed
 	 */
 	public void generateLabirynth(long seed) {
-		Generator mazeGenerator = new Generator(this, seed);
+		GeneratorDFS mazeGenerator = new GeneratorDFS(this, seed);
 		mazeGenerator.generate();
 	}
 	
 	public void generateLabirynth() {
-		Generator mazeGenerator = new Generator(this, new Random().nextLong());
+		GeneratorDFS mazeGenerator = new GeneratorDFS(this, new Random().nextLong());
 		mazeGenerator.generate();
 	}
 	
