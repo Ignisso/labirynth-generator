@@ -1,11 +1,11 @@
 import java.util.Random;
 
 public class Labirynth {
-	private int     width = 0;
-	private int     height = 0;
-	private Cell    grid[][] = null;
-	private Cell    begin = null;
-	private Cell    end = null;
+	private int     width     = 0;
+	private int     height    = 0;
+	private Cell    grid[][]  = null;
+	private Cell    begin     = null;
+	private Cell    end       = null;
 	private boolean completed = false;
 	
 	/**
@@ -45,17 +45,25 @@ public class Labirynth {
 		this.completed = false;
 	}
 	
+	public void clearVisits() {
+        for(Cell[] row: grid) {
+            for(Cell cell: row) {
+                cell.unvisit();
+            }
+        }
+	}
+	
 	/**
 	 *  Generates Labirytnth
 	 *  @param seed [optional] - generates Labirynth using gives seed
 	 */
 	public void generateLabirynth(long seed) {
-		GeneratorDFS mazeGenerator = new GeneratorDFS(this, seed);
+		Generator mazeGenerator = new GeneratorDFS(this, seed);
 		mazeGenerator.generate();
 	}
 	
 	public void generateLabirynth() {
-		GeneratorDFS mazeGenerator = new GeneratorDFS(this, new Random().nextLong());
+		Generator mazeGenerator = new GeneratorDFS(this, new Random().nextLong());
 		mazeGenerator.generate();
 	}
 	
@@ -63,27 +71,25 @@ public class Labirynth {
 	 * Solves Labirynth
 	 */
 	public void solveLabirynth() {
-		Solver mazeSolver = new Solver(this);
+		Solver mazeSolver = new SolverBFS(this);
 		mazeSolver.solve();
 	}
 	
+	/**
+	 * Write data from Labiryth to bitmap file
+	 */
 	public void writeToBitmap(String path) {
 		FileBMP bmp = new FileBMP(this);
 		bmp.load();
 		bmp.write(path);
 	}
 	
+	/**
+	 * Read data from bitmap into Labirynth
+	 */
 	public void readFromBitmap(String path) {
 		FileBMP bmp = new FileBMP(this);
 		bmp.read(path);
-	}
-
-	public void clearVisits() {
-        for(Cell[] row: grid) {
-            for(Cell cell: row) {
-                cell.unvisit();
-            }
-        }
 	}
 	
 	/**
@@ -152,7 +158,6 @@ public class Labirynth {
 				}
 			break;
 		}
-
 		return u;
     }
 	
@@ -193,5 +198,4 @@ public class Labirynth {
 		}
 		return str.toString();
 	}
-
 }

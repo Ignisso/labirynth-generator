@@ -2,7 +2,7 @@ import java.util.Stack;
 import java.util.Random;
 
 public class GeneratorDFS
-implements GeneratorTemplate {
+implements Generator {
     private Labirynth maze;
     long seed;
     

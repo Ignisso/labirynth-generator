@@ -52,6 +52,8 @@ public class Cell {
 				return " ";
 			case CORRECT:
 				return ".";
+			case END:
+				return "X";
 			default:
 				return "?";
 		}
