@@ -93,10 +93,31 @@ public class Labirynth {
 	}
 	
 	/**
+	 * Write data from Labiryth to binary file
+	 */
+	public void writeToBinary(String path) {
+		FileBinary bin = new FileBinary(this);
+		bin.load();
+		bin.write(path);
+	}
+	
+	/**
+	 * Read data from binary file into Labirynth
+	 */
+	public void readFromBinary(String path) {
+		FileBinary bin = new FileBinary(this);
+		bin.read(path);
+	}
+	
+	/**
 	 * Getters and Setters
 	 */
 	public void setCompleted() {
 		this.completed = true;
+	}
+	
+	public boolean isCompleted() {
+		return this.completed;
 	}
 	
 	public void setBegin(Cell cell) {
