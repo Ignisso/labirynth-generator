@@ -29,7 +29,13 @@ implements Solver {
 
             for(int direction = 0; direction < Direction.LENGTH; direction++) {     
                 
-                Cell u = maze.getCell(v, direction, 1);
+                Cell u;
+				try {
+					u = maze.getCell(v, direction, 1);
+				} catch (IncorrectCoordsException e) {
+					System.err.println("Cell index is out of bounds");
+					return false;
+				}
                 if(u.getType() == CellType.WALL)
                     continue;
                 if(u == null || u.isVisited())

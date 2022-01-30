@@ -2,22 +2,23 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.ArrayIndexOutOfBoundsException;
 
 public class FileBinary
 implements FileIO {
 	Labirynth maze;
 	byte[] data;
 	
-	public static final byte WALL_B = 0x00;
-	public static final byte ROUTE_B = 0x01;
+	public static final byte WALL_B    = 0x00;
+	public static final byte ROUTE_B   = 0x01;
 	public static final byte CORRECT_B = 0x02;
-	public static final byte END_B = 0x03;
+	public static final byte END_B     = 0x03;
 	
 	public FileBinary(Labirynth maze) {
 		this.maze = maze;
 	}
 	
-	public void load() {
+	public boolean load() {
 		int change = 1;
 		if (maze.isCompleted())
 			change = 2;
@@ -35,7 +36,14 @@ implements FileIO {
 			for (int j = 0; j < maze.getWidth(); j++) {
 				int shift = 8 - change - offset % 8;
 				byte d = 0x00;
-				switch(this.maze.getCell(j, i).getType()) {
+				Cell c;
+				try {
+					c = this.maze.getCell(i, j);
+				} catch (IncorrectCoordsException e) {
+					System.err.println("Bitmap coords is not valid");
+					return false;
+				}
+				switch(c.getType()) {
 					case WALL:
 						d = WALL_B;
 						break;
@@ -53,86 +61,116 @@ implements FileIO {
 				offset += change;
 			}
 		}
+		return true;
 	}
 	
-	public void write(String path) {
-		File fileout = new File(path);
-		FileOutputStream streamout;
+	public boolean write(String path) {
+		File fileout;
 		try {
-			streamout = new FileOutputStream(fileout);
+			fileout = new File(path);
+		} catch (NullPointerException e) {
+			System.err.println("Invalid path to file");
+			return false;
 		}
-		catch (Exception e) {
-			System.out.println(e.getStackTrace());
-			return;
+		try (FileOutputStream streamout = new FileOutputStream(fileout)){
+			try {
+				streamout.write(this.data);
+			}
+			catch (IOException e) {
+				System.err.println("Error occured while writing to file " + path);
+				return false;
+			}
+		} catch (IOException e) {
+			System.err.println("Could not open or create file " + path);
+			return false;
 		}
-		try {
-			streamout.write(this.data);
-		}
-		catch (Exception e) {
-			System.out.println(e.getStackTrace());
-		}
+		return true;
 	}
 	
-	public void read(String path) {
-		File filein = new File(path);
-		FileInputStream streamin;
+	public boolean read(String path) {
+		this.maze.clear();
+		File filein;
 		try {
-			streamin = new FileInputStream(filein);
+			filein = new File(path);
+		} catch (NullPointerException e) {
+			System.err.println("Invalid path to file");
+			return false;
 		}
-		catch (IOException e) {
-			System.out.println(e.getStackTrace());
-			return;
+		this.data = new byte[1024 * 1024 * 64]; // 64 MB
+		int len = 0;
+		try (FileInputStream streamin = new FileInputStream(filein)) {
+			try {
+				len = streamin.read(this.data);
+			} catch (IOException e) {
+				System.out.println("Error occured while reading from file " + path);
+				return false;
+			}
+		} catch (IOException e) {
+			System.err.println("Could not read from file " + path);
+			return false;
 		}
+		
+		if (len <= 6) {
+			System.err.println("Tried to load empty or invalid labirynth");
+			return false;
+		}
+		
+		int width = 0;
+		width |= this.data[0];
+		width <<= 8;
+		width |= (this.data[1] & 0xff);
+		int height = 0;
+		height |= this.data[2];
+		height <<= 8;
+		height |= (this.data[3] & 0xff);
 		try {
-			this.data = new byte[1024 * 1024 * 64]; // 64 MB
-			streamin.read(this.data);
-			int width = 0;
-			width |= this.data[0];
-			width <<= 8;
-			width |= (this.data[1] & 0xff);
-			int height = 0;
-			height |= this.data[2];
-			height <<= 8;
-			height |= (this.data[3] & 0xff);
 			this.maze.setSize(width, height);
-			int change = 1;
-			if (this.data[4] != 0x00) {
-				this.maze.setCompleted();
-				change = 2;
-			}
-			
-			
-			int offset = 40;
-			Cell grid[][] = new Cell[width][height];
-			for (int j = 0; j < height; j++) {
-				for (int i = 0; i < width; i++) {
-					int shift = 8 - change - offset % 8;
-					byte b = (byte)(this.data[offset / 8] >> shift);
-					b &= 0x03;
-					if (this.data[4] == 0x00)
-						b &= 0x01;
-					switch(b) {
-						case WALL_B:
-							grid[i][j] = new Cell(i, j, CellType.WALL);
-							break;
-						case ROUTE_B:
-							grid[i][j] = new Cell(i, j, CellType.ROUTE);
-							break;
-						case CORRECT_B:
-							grid[i][j] = new Cell(i, j, CellType.CORRECT);
-							break;
-						case END_B:
-							grid[i][j] = new Cell(i, j, CellType.END);
-							break;
-					}
-					offset += change;
+		} catch (IncorrectSizeException e) {
+			System.err.println("Width and height can not be larger than 2048");
+			return false;
+		}
+		int change = 1;
+		if (this.data[4] != 0x00) {
+			this.maze.setCompleted();
+			change = 2;
+		}
+		
+		int offset = 40;
+		Cell grid[][] = new Cell[width][height];
+		for (int j = 0; j < height; j++) {
+			for (int i = 0; i < width; i++) {
+				int shift = 8 - change - offset % 8;
+				byte b = (byte)(this.data[offset / 8] >> shift);
+				b &= 0x03;
+				if (this.data[4] == 0x00)
+					b &= 0x01;
+				switch(b) {
+					case WALL_B:
+						grid[i][j] = new Cell(i, j, CellType.WALL);
+						break;
+					case ROUTE_B:
+						grid[i][j] = new Cell(i, j, CellType.ROUTE);
+						break;
+					case CORRECT_B:
+						grid[i][j] = new Cell(i, j, CellType.CORRECT);
+						break;
+					case END_B:
+						grid[i][j] = new Cell(i, j, CellType.END);
+						this.maze.setCompleted();
+						break;
 				}
+				offset += change;
 			}
-			maze.setGrid(grid);
 		}
-		catch (IOException e) {
-			System.out.println(e.getStackTrace());
-			return;
+		try {
+			this.maze.setGrid(grid);
+		} catch (NullPointerException e) {
+			System.err.println("No data to read/write");
+				return false;
+		} catch (ArrayIndexOutOfBoundsException e) {
+			System.err.println("Grid is inconsistent");
+				return false;
 		}
+		return true;
 	}
 }

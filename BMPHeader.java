@@ -1,3 +1,5 @@
+import java.lang.NullPointerException;
+
 public class BMPHeader {
 	public static final int SIZE = 26;
 	/*
@@ -19,11 +21,12 @@ public class BMPHeader {
 	private short  bcPlanes;
 	private short  bcBitCount;
 	/* data bytes */
-	private byte[] data = new byte[SIZE];
+	private byte[] data;
 	
 	
 	
 	public BMPHeader() {
+		this.data        = new byte[SIZE];
 		this.bfType      = 0x424D; // BM
 		this.bfReserved1 = 0; // reserved must be 0
 		this.bfReserved2 = 0; // reserved must be 0
@@ -52,11 +55,16 @@ public class BMPHeader {
 		data[25] = (byte)(bcBitCount >> 8);
 	}
 	
-	public void setHeader(int width, int height) {
+	public boolean setHeader(int width, int height)
+	throws IncorrectSizeException, UninitializedDataException {
+		if (width < 0 || height < 0)
+			throw new IncorrectSizeException("Width or height can not be negative");
 		this.bfSize   = SIZE + width * height * 3 + height * 3; // 3 bytes per pixel  + 3 bytes line end
 		this.bcWidth  = (short)width;
 		this.bcHeight = (short)height;
 		
+		if (data == null)
+			throw new UninitializedDataException("Data is null pointing");
 		data[2]  = (byte)(bfSize);
 		data[3]  = (byte)(bfSize >> 8);
 		data[4]  = (byte)(bfSize >> 16);
@@ -65,6 +73,7 @@ public class BMPHeader {
 		data[19] = (byte)(bcWidth >> 8);
 		data[20] = (byte)(bcHeight);
 		data[21] = (byte)(bcHeight >> 8);
+		return true;
 	}
 	
 	public short getWidth() {
@@ -79,7 +88,13 @@ public class BMPHeader {
 		return this.data;
 	}
 
-	public void load(byte[] b) {
+	public boolean load(byte[] b)
+	throws IncorrectDataFormatException {
+		if (b == null)
+			throw new NullPointerException("Data is null pointing");
+		if (b.length < 26)
+			throw new IncorrectDataFormatException("Data is not valid");
+		
 		this.bcWidth = 0;
 		this.bcWidth |= (b[19] & 0x00ff);
 		this.bcWidth <<= 8;
@@ -88,7 +103,17 @@ public class BMPHeader {
 		this.bcHeight |= (b[21] & 0x00ff);
 		this.bcHeight <<= 8;
 		this.bcHeight |= (b[20] & 0x00ff);
-		setHeader(bcWidth, bcHeight);
+		
+		try {
+			setHeader(bcWidth, bcHeight);
+		} catch (UninitializedDataException e) {
+			System.err.println("Could not set bitmap header, memory is not allocated");
+			return false;
+		} catch (IncorrectSizeException e) {
+			System.err.println("Wrong width or height");
+			return false;
+		}
+		return true;
 	}
 	
 	@Override

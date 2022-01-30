@@ -1,3 +1,6 @@
+import java.lang.ArrayIndexOutOfBoundsException;
+import java.lang.NullPointerException;
+
 public class RGB {
 	byte rgbBlue;
 	byte rgbGreen;
@@ -26,10 +29,15 @@ public class RGB {
 		return value;
 	}
 	
-	public void setBytes(byte[] data, int offset) {
+	public boolean setBytes(byte[] data, int offset) {
+		if (data == null)
+			throw new NullPointerException("Data is null pointing");
+		if (offset < 0 || data.length < offset + 2)
+			throw new ArrayIndexOutOfBoundsException("Offset out of scope");
 		data[offset]     = this.rgbBlue;
 		data[offset + 1] = this.rgbGreen;
 		data[offset + 2] = this.rgbRed;
+		return true;
 	}
 	
 	@Override

@@ -1,4 +1,5 @@
 import java.util.Random;
+import java.lang.ArrayIndexOutOfBoundsException;
 
 public class Labirynth {
 	private int     width     = 0;
@@ -30,6 +31,15 @@ public class Labirynth {
 	
 	public Labirynth() {
 	
+	}
+	
+	public void clear() {
+		this.width = 0;
+		this.height = 0;
+		this.grid = null;
+		this.begin = null;
+		this.end = null;
+		this.completed = false;
 	}
 	
 	public void reset() {
@@ -76,37 +86,54 @@ public class Labirynth {
 	}
 	
 	/**
-	 * Write data from Labiryth to bitmap file
-	 */
+	* Write data from Labiryth to bitmap file
+	*/
 	public void writeToBitmap(String path) {
-		FileBMP bmp = new FileBMP(this);
+		FileIO bmp = new FileBMP(this);
 		bmp.load();
 		bmp.write(path);
 	}
 	
 	/**
-	 * Read data from bitmap into Labirynth
-	 */
+	* Read data from bitmap into Labirynth
+	*/
 	public void readFromBitmap(String path) {
-		FileBMP bmp = new FileBMP(this);
+		FileIO bmp = new FileBMP(this);
 		bmp.read(path);
 	}
 	
 	/**
-	 * Write data from Labiryth to binary file
-	 */
+	* Write data from Labiryth to binary file
+	*/
 	public void writeToBinary(String path) {
-		FileBinary bin = new FileBinary(this);
+		FileIO bin = new FileBinary(this);
 		bin.load();
 		bin.write(path);
 	}
 	
 	/**
-	 * Read data from binary file into Labirynth
-	 */
+	* Read data from binary file into Labirynth
+	*/
 	public void readFromBinary(String path) {
-		FileBinary bin = new FileBinary(this);
+		FileIO bin = new FileBinary(this);
 		bin.read(path);
+	}
+	
+	/**
+	* Write data from Labiryth to text file
+	*/
+	public void writeToText(String path) {
+		FileIO txt = new FileText(this);
+		txt.load();
+		txt.write(path);
+	}
+	
+	/**
+	* Read data from text file file into Labirynth
+	*/
+	public void readFromText(String path) {
+		FileIO txt = new FileText(this);
+		txt.read(path);
 	}
 	
 	/**
@@ -148,11 +175,13 @@ public class Labirynth {
 		return this.end;
 	}
 	
-	public Cell getCell(int x, int y) {
+	public Cell getCell(int x, int y) throws IncorrectCoordsException {
+		if (x >= this.width || y >= this.height)
+			throw new IncorrectCoordsException("X or Y coord is not valid");
 		return this.grid[x][y];
 	}
 
-	public Cell getCell(Cell v, int direction, int distance) {
+	public Cell getCell(Cell v, int direction, int distance) throws IncorrectCoordsException {
     	Cell u = null;
     	switch(direction) {
 			case Direction.UP:
@@ -182,7 +211,9 @@ public class Labirynth {
 		return u;
     }
 	
-	public void setSize(int width, int height) {
+	public boolean setSize(int width, int height) throws IncorrectSizeException {
+		if (width > 2048 || height > 2048)
+			throw new IncorrectSizeException("Width or height is out of 2048");
 		this.width = width;
 		this.height = height;
 		this.grid = new Cell[this.width][this.height];
@@ -191,13 +222,19 @@ public class Labirynth {
 			for (int j = 0; j < this.height; j++)
 				this.grid[i][j] = new Cell(i, j, CellType.WALL);
 		}
+		return true;
 	}
 	
-	public void setGrid(Cell arr[][]) {
+	public boolean setGrid(Cell arr[][]) {
+		if (this.grid == null || arr == null)
+			throw new NullPointerException("No data to set");
+		if (this.grid.length != arr.length)
+			throw new ArrayIndexOutOfBoundsException("Grids are not equal");
 		for (int i = 0; i < this.width; i++) {
 			for (int j = 0; j < this.height; j++)
 				this.grid[i][j] = arr[i][j];
 		}
+		return true;
 	}
 	
 	public int getWidth() {
