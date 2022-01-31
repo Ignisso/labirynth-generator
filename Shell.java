@@ -256,18 +256,18 @@ public class Shell {
 	 */
 	public void printHelp() {
 
-		System.out.println("== GENERAL ==")
+		System.out.println("== GENERAL ==");
 		System.out.println("List all Labirynths: list");
 		System.out.println("Create Labirynth object: new <name> [width] [height]");
 		System.out.println("Print this help: help");
 		System.out.println("Quit: exit/quit");
 		
-		System.out.println("== LABIRYNTH ==")
+		System.out.println("== LABIRYNTH ==");
 		System.out.println("Set Begin/End point: <name> set begin/end <x> <y>");
 		System.out.println("Generate Labirynth: <name> generate [seed]");
 		System.out.println("Solve Labirynth: <name> solve");
 		System.out.println("Print Labirynth: <name> print");
-		System.out.println("Write/Read to/from file: <name> write/read <bitmap/text/binary> <path>")
+		System.out.println("Write/Read to/from file: <name> write/read <bitmap/text/binary> <path>");
 			
 	}
 
