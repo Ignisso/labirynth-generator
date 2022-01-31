@@ -1,5 +1,6 @@
 public class Main {
 	public static void main(String[] args) {
+
 		Labirynth lab = new Labirynth(20, 20);
 		Labirynth rlab = new Labirynth();
 		Labirynth slab = new Labirynth();
@@ -11,7 +12,7 @@ public class Main {
 		lab.writeToBitmap("../maze.bmp");
 		lab.writeToBinary("../maze.bin");
 		lab.writeToText("../maze.txt");
-		
+			
 		rlab.readFromBitmap("../maze.bmp");
 		rlab.writeToBitmap("../maze2.bmp");
 		rlab.readFromBinary("../maze.bin");
@@ -27,3 +28,4 @@ public class Main {
 		slab.writeToText("../maze3.txt");
 	}
 }
+

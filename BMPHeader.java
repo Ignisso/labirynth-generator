@@ -23,17 +23,15 @@ public class BMPHeader {
 	/* data bytes */
 	private byte[] data;
 	
-	
-	
 	public BMPHeader() {
 		this.data        = new byte[SIZE];
-		this.bfType      = 0x424D; // BM
-		this.bfReserved1 = 0; // reserved must be 0
-		this.bfReserved2 = 0; // reserved must be 0
-		this.bfOffBits   = SIZE; // 26 bytes from the begining to the bitmap bits
-		this.bcSize      = 12; // bytes required by this structure
-		this.bcPlanes    = 1; // must be 1
-		this.bcBitCount  = 24; // 24-bit bitmap
+		this.bfType      = 0x424D; 	// BM
+		this.bfReserved1 = 0; 		// reserved must be 0
+		this.bfReserved2 = 0; 		// reserved must be 0
+		this.bfOffBits   = SIZE; 	// 26 bytes from the begining to the bitmap bits
+		this.bcSize      = 12; 		// bytes required by this structure
+		this.bcPlanes    = 1; 		// must be 1
+		this.bcBitCount  = 24; 		// 24-bit bitmap
 		
 		data[0]  = (byte)(bfType >> 8);
 		data[1]  = (byte)(bfType);
@@ -54,7 +52,15 @@ public class BMPHeader {
 		data[24] = (byte)(bcBitCount);
 		data[25] = (byte)(bcBitCount >> 8);
 	}
-	
+
+	/**
+    * Sets the header of bitmap file
+    * @param width width of the labirynth
+    * @param height height of the labirynth
+    * @return true if everything went succesfully
+    * @throws IncorrectSizeException if tried to pass negative width or height as an argument
+    * @throws UninitializedDataException if data is null
+    */
 	public boolean setHeader(int width, int height)
 	throws IncorrectSizeException, UninitializedDataException {
 		if (width < 0 || height < 0)
@@ -75,19 +81,41 @@ public class BMPHeader {
 		data[21] = (byte)(bcHeight >> 8);
 		return true;
 	}
-	
+
+	/**
+    * Get width of labirynth inside bitmap file
+    * @return width of the labirynth inside bitmap file
+    */
 	public short getWidth() {
 		return this.bcWidth;
 	}
-	
+
+	/**
+    * Get height of labirynth inside bitmap file
+    * @return height of the labirynth inside bitmap file
+    */
 	public short getHeight() {
 		return this.bcHeight;
 	}
-	
+
+	/**
+    * Get header data
+    * @return header data
+    */
 	public byte[] getData() {
 		return this.data;
 	}
 
+
+	/**
+    * Load bitmap header
+    * @param b data bytes
+    * @return true if everything went succesfully
+    * @throws IncorrectDataFormatException if data is incorrect
+    * @throws NullPointerException if data is null
+    * @throws UninitializedDataException if memory isnt allocated
+    * @throws IncorrectSizeException if width or height is wrong
+    */
 	public boolean load(byte[] b)
 	throws IncorrectDataFormatException {
 		if (b == null)

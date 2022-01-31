@@ -6,7 +6,15 @@ public class BMPInfo {
 		this.header = null;
 		this.bitmap = null;
 	}
-	
+
+	/**
+    * Set header of bitmap file
+    * @param width width of the labirynth
+    * @param height height of the labirynth
+    * @return true if everything went succesfully
+    * @throws IncorrectSizeException if tried to pass wrong width and height
+    * @throws UninitializedDataException if bitmap header wasn't created
+    */
 	public boolean setInfo(int width, int height) {
 		this.header = new BMPHeader();
 		try {
@@ -24,7 +32,17 @@ public class BMPInfo {
 			this.bitmap[i] = new RGB();
 		return true;
 	}
-	
+
+	/**
+    * Set color of pixel at cords (x,y)
+    * @param x x coordinate
+    * @param y y coordinate
+    * @param color pixel color
+    * @return true if everything went succesfully
+    * @throws UninitializedDataException if header wasn't initialized
+    * @throws IncorrectCoordsException if x or y coordinate is invalid
+    * @throws ArrayIndexOutOfBoundsException if bitmap is too small
+    */
 	public boolean setPixelAt(int x, int y, int color)
 	throws UninitializedDataException, IncorrectCoordsException {
 		if (this.header == null || this.bitmap == null)
@@ -38,6 +56,15 @@ public class BMPInfo {
 		return true;
 	}
 	
+	/**
+    * Get color of pixel at cords (x,y)
+    * @param x x coordinate
+    * @param y y coordinate
+    * @return color of pixel at coords (x,y)
+    * @throws UninitializedDataException if header wasn't initialized
+    * @throws IncorrectCoordsException if x or y coordinate is invalid
+    * @throws ArrayIndexOutOfBoundsException if bitmap is too small
+    */
 	public int getPixelAt(int x, int y)
 	throws UninitializedDataException, IncorrectCoordsException {
 		if (this.header == null)
@@ -49,7 +76,12 @@ public class BMPInfo {
 			throw new ArrayIndexOutOfBoundsException("Not enough bitmap memory");
 		return this.bitmap[offset].getColor();
 	}
-
+	/**
+    * Get bitmap data
+    * @return array containing bitmap data
+    * @throws NullPointerException if data couldn't be initialized
+    * @throws ArrayIndexOutOfBoundsException if exceeded array size
+    */
 	public byte[] getBytes() {
 		int size = BMPHeader.SIZE + this.bitmap.length * 3;
 		byte[] data = new byte[size];
@@ -74,14 +106,29 @@ public class BMPInfo {
 		return data;
 	}
 
+	/**
+    * Get data width
+    * @return width of data
+    */
 	public short getWidth() {
 		return this.header.getWidth();
 	}
 	
+	/**
+    * Get data height
+    * @return height of data
+    */
 	public short getHeight() {
 		return this.header.getHeight();
 	}
 
+	/**
+    * Load bitmap header
+    * @param b data to load
+    * @return true if everything went succesfully
+    * @throws NullPointerException if header is null
+    * @throws IncorrectDataFormatException if not enough data
+    */
 	public boolean loadHeader(byte[] b) {
 		if (b == null)
 			throw new NullPointerException("Can not load header from null");
@@ -98,7 +145,14 @@ public class BMPInfo {
 		this.setInfo(header.getWidth(), header.getHeight());
 		return true;
 	}
-
+	/**
+    * Load bitmap
+    * @param b data to load
+    * @return true if everything went succesfully
+    * @throws UninitializedDataException if header isn't initialized
+    * @throws NullPointerException if data is null
+    * @throws IncorrectDataFormatException if not enough data
+    */
 	public boolean load(byte[] b)
 	throws UninitializedDataException, IncorrectDataFormatException {
 		if (this.header == null)

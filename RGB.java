@@ -13,12 +13,19 @@ public class RGB {
 		this.rgbRed   = 0;
 	}
 	
+	/**
+    * Set color
+    * @param color RGB value
+    */
 	public void setColor(int color) {
 		this.rgbBlue = (byte)(color);
 		this.rgbGreen = (byte)(color >> 8);
 		this.rgbRed = (byte)(color >> 16);
 	}
-
+	/**
+    * Get color
+    * @return RGB value
+    */
 	public int getColor() {
 		int value = 0;
 		value |= (this.rgbRed & 0xff);
@@ -28,7 +35,12 @@ public class RGB {
 		value |= (this.rgbBlue & 0xff);
 		return value;
 	}
-	
+	/**
+    * Set color to data array 
+    * @param data data to set
+    * @param offset offset
+    * @return true if everything went succesfully
+    */
 	public boolean setBytes(byte[] data, int offset) {
 		if (data == null)
 			throw new NullPointerException("Data is null pointing");

@@ -9,13 +9,10 @@ implements Solver {
     }
 
     /**
-     * Solves labirynth using data from random DFS
-     * 
-     * Starting from endCell we traverse to their parent and mark every 
-     * cell on our way as correct path until we reach beginCell. Then we
-     * mark Labirynth as completed.
-     */
-
+    * Solve labirynth usign BFS
+    * @return true if everything went succesfully
+    * @throws IncorrectCoordsException if cell index is out of bounds
+    */
     public boolean solve() {
         
         LinkedList<Cell> q = new LinkedList<Cell>();

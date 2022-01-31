@@ -1,5 +1,6 @@
-public class EntropyBenchmark {
-	public static void main(String[] args) {
+public class EntropyBenchmark  {
+	public static void main(String[] args)  
+	throws IncorrectCoordsException {
 		int[][] entropy = new int[25][25];
 		for(int i = 1; i <= 10000; i++) {
 			Labirynth lab = new Labirynth(10, 10);

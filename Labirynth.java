@@ -9,11 +9,6 @@ public class Labirynth {
 	private Cell    end       = null;
 	private boolean completed = false;
 	
-	/**
-	 * Constructor for class Labirynth
-	 * @param width - width of the Labirynth in vertices
-	 * @param height - height of the Labirynth in vertices
-	 */
 	public Labirynth(int width, int height) {
 		this.width = 2 * width - 1;
 		this.height = 2 * height - 1;
@@ -33,6 +28,9 @@ public class Labirynth {
 	
 	}
 	
+	/**
+    * Clear object
+    */
 	public void clear() {
 		this.width = 0;
 		this.height = 0;
@@ -41,7 +39,9 @@ public class Labirynth {
 		this.end = null;
 		this.completed = false;
 	}
-	
+	/**
+    * Unsolve labirynth
+    */
 	public void reset() {
 		if (this.completed == false)
 			return;
@@ -54,7 +54,9 @@ public class Labirynth {
 		}
 		this.completed = false;
 	}
-	
+	/**
+    * Unvisit every cell
+    */
 	public void clearVisits() {
         for(Cell[] row: grid) {
             for(Cell cell: row) {
@@ -64,123 +66,169 @@ public class Labirynth {
 	}
 	
 	/**
-	 *  Generates Labirytnth
-	 *  @param seed [optional] - generates Labirynth using gives seed
+	 * Generate labirytnth
+	 * @param seed [optional] - generates Labirynth using given seed
+	 * @return true if everything went succesfully
 	 */
-	public void generateLabirynth(long seed) {
+	public boolean generateLabirynth(long seed) {
 		Generator mazeGenerator = new GeneratorDFS(this, seed);
-		mazeGenerator.generate();
+		return mazeGenerator.generate();
 	}
 	
-	public void generateLabirynth() {
+	public boolean generateLabirynth() {
 		Generator mazeGenerator = new GeneratorDFS(this, new Random().nextLong());
-		mazeGenerator.generate();
+		return mazeGenerator.generate();
 	}
 	
 	/**
-	 * Solves Labirynth
+	 * Solve labirynth
+	 * @return true if everything went succesfully
 	 */
-	public void solveLabirynth() {
+	public boolean solveLabirynth() {
 		Solver mazeSolver = new SolverBFS(this);
-		mazeSolver.solve();
+		return mazeSolver.solve();
 	}
 	
 	/**
-	* Write data from Labiryth to bitmap file
+	* Write data from labiryth to bitmap file
+	* @return true if everything went succesfully
 	*/
-	public void writeToBitmap(String path) {
+	public boolean writeToBitmap(String path) {
 		FileIO bmp = new FileBMP(this);
 		bmp.load();
-		bmp.write(path);
+		return bmp.write(path);
 	}
 	
 	/**
-	* Read data from bitmap into Labirynth
+	* Read data from bitmap into labirynth
+	* @return true if everything went succesfully
 	*/
-	public void readFromBitmap(String path) {
+	public boolean readFromBitmap(String path) {
 		FileIO bmp = new FileBMP(this);
-		bmp.read(path);
+		return bmp.read(path);
 	}
 	
 	/**
-	* Write data from Labiryth to binary file
+	* Write data from labiryth to binary file
+	* @return true if everything went succesfully
 	*/
-	public void writeToBinary(String path) {
+	public boolean writeToBinary(String path) {
 		FileIO bin = new FileBinary(this);
 		bin.load();
-		bin.write(path);
+		return bin.write(path);
 	}
 	
 	/**
-	* Read data from binary file into Labirynth
+	* Read data from binary file into labirynth
+	* @return true if everything went succesfully
 	*/
-	public void readFromBinary(String path) {
+	public boolean readFromBinary(String path) {
 		FileIO bin = new FileBinary(this);
-		bin.read(path);
+		return bin.read(path);
 	}
 	
 	/**
-	* Write data from Labiryth to text file
+	* Write data from labiryth to text file
+	* @return true if everything went succesfully
 	*/
-	public void writeToText(String path) {
+	public boolean writeToText(String path) {
 		FileIO txt = new FileText(this);
 		txt.load();
-		txt.write(path);
+		return txt.write(path);
 	}
 	
 	/**
-	* Read data from text file file into Labirynth
+	* Read data from text file file into labirynth
+	* @return true if everything went succesfully
 	*/
-	public void readFromText(String path) {
+	public boolean readFromText(String path) {
 		FileIO txt = new FileText(this);
-		txt.read(path);
+		return txt.read(path);
 	}
 	
 	/**
-	 * Getters and Setters
-	 */
+    * Set labirynth as completed
+    */
 	public void setCompleted() {
 		this.completed = true;
 	}
-	
+	/**
+    * Check if labirynth is solved
+    * @return true if labirynth is solved
+    */
 	public boolean isCompleted() {
 		return this.completed;
 	}
-	
+	/**
+    * Set beginning cell of labirynth
+    * @param cell beginning cell
+    */
 	public void setBegin(Cell cell) {
 		reset();
 		this.begin = cell;
 	}
-	
+	/**
+    * Set beginning cell of labirynth
+    * @param x x coordinate
+    * @param y y coordinate
+    */
 	public void setBegin(int x, int y) {
 		reset();
 		this.begin = this.grid[2 * x - 1][2 * y - 1];
 	}
-	
+	/**
+    * Get beginning cell of labirynth
+    * @return beginning cell
+    */
 	public Cell getBegin() {
 		return this.begin;
 	}
 	
+	/**
+    * Set ending cell of labirynth
+    * @param cell ending cell
+    */
 	public void setEnd(Cell cell) {
 		reset();
 		this.end = cell;
 	}
 
+	/**
+    * Set ending cell of labirynth
+    * @param x x coordinate
+    * @param y y coordinate
+    */
 	public void setEnd(int x, int y) {
 		reset();
 		this.end = this.grid[2 * x - 1][2 * y - 1];
 	}
-	
+	/**
+    * Get ending cell of labirynth
+    * @return ending cell
+    */
 	public Cell getEnd() {
 		return this.end;
 	}
-	
+	/**
+    * Get cell given (x,y)
+    * @param x x coord
+    * @param y y coord
+    * @return asked cell
+    * @throws IncorrectCoordsException if x or y isnt valid
+    */
 	public Cell getCell(int x, int y) throws IncorrectCoordsException {
 		if (x >= this.width || y >= this.height)
 			throw new IncorrectCoordsException("X or Y coord is not valid");
 		return this.grid[x][y];
 	}
-
+	/**
+    * Get cell based on other cell and direction
+    * @param cell starting cell
+    * @param direction direction 
+    * @param distance distance between cells
+    * @return asked cell
+    * @throws IncorrectCoordsException if x or y isnt valid
+    */
 	public Cell getCell(Cell v, int direction, int distance) throws IncorrectCoordsException {
     	Cell u = null;
     	switch(direction) {
@@ -210,7 +258,13 @@ public class Labirynth {
 		}
 		return u;
     }
-	
+	/**
+    * Set ending cell of labirynth
+    * @param width width of labirynth
+    * @param height height of labirynth
+    * @return true if everything went succesfully
+    * @throws IncorrectSizeException if width or height is bigger than 2048
+    */
 	public boolean setSize(int width, int height) throws IncorrectSizeException {
 		if (width > 2048 || height > 2048)
 			throw new IncorrectSizeException("Width or height is out of 2048");
@@ -224,7 +278,13 @@ public class Labirynth {
 		}
 		return true;
 	}
-	
+	/**
+    * Set grid of labirynth
+    * @param cell grid
+    * @return true if everything went succesfully
+    * @throws NullPointerException no data to set
+    * @throws ArrayIndexOutOfBoundsException grids have different sizes
+    */
 	public boolean setGrid(Cell arr[][]) {
 		if (this.grid == null || arr == null)
 			throw new NullPointerException("No data to set");
@@ -236,11 +296,17 @@ public class Labirynth {
 		}
 		return true;
 	}
-	
+	/**
+    * Get labirynth's width
+    * @return asked cell
+    */
 	public int getWidth() {
 		return this.width;
 	}
-	
+	/**
+    * Get labirynth's height
+    * @return asked cell
+    */
 	public int getHeight() {
 		return this.height;
 	}

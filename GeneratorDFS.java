@@ -12,17 +12,10 @@ implements Generator {
     }
 
     /**
-     * Generates walls inside Labirynth using Random DFS
-     * 
-     * It starts generatin from beginCell it looks for all
-     * non-visited neighbours and enters one of them at random.
-     * Repeats this process untill there is no more neighbours,
-     * Then it returns and on its way back it checks whether that
-     * cell has neighbours that can be entered. It repeats this
-     * process until it returns to begin.
-     * Additionally during travers it marks furthest cell that is
-     * still on border as endCell and sets a parent for every cell.
-     */
+    * Generate labirynth using Random DFS algorithm and given seed
+    * @return true if everything went succesfully
+    * @throws IncorrectCoordsException if Cell is out of bounds
+    */
     public boolean generate() {
 
     	int width = maze.getWidth();

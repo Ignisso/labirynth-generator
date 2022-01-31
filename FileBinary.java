@@ -18,6 +18,11 @@ implements FileIO {
 		this.maze = maze;
 	}
 	
+	/**
+    * Load labirynth from binary file
+    * @return true if everything went succesfully
+    * @throws IncorrectCoordsException if bitmap coordinates are invalid
+    */
 	public boolean load() {
 		int change = 1;
 		if (maze.isCompleted())
@@ -63,7 +68,13 @@ implements FileIO {
 		}
 		return true;
 	}
-	
+	/**
+    * Write labirynth object to file 
+    * @param path path to output file
+    * @return true if everything went succesfully
+    * @throws NullPointerException if path to file is invalid
+    * @throws IOException if error occured during writing to file
+    */
 	public boolean write(String path) {
 		File fileout;
 		try {
@@ -86,7 +97,15 @@ implements FileIO {
 		}
 		return true;
 	}
-	
+	/**
+    * Read from binary file
+    * @param path path to input file
+    * @return true if everything went succesfully
+    * @throws NullPointerException if path to file is invalid
+    * @throws IOException if error occured during reading a file
+    * @throws IncorrectSizeException if labirynth width or height exceeds 2048
+    * @throws ArrayIndexOutOfBoundsException if grid is inconsistent
+    */
 	public boolean read(String path) {
 		this.maze.clear();
 		File filein;
