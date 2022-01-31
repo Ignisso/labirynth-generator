@@ -27,7 +27,10 @@ public class Shell {
 			
 			this.getNextCommand();
 
-			if(this.getCmdSplit(0).equals("exit") || this.getCmdSplit(0).equals("quit") ) {
+			if (this.getCmdSplit(0).equals("help")){
+				this.printHelp();
+			}
+			else if(this.getCmdSplit(0).equals("exit") || this.getCmdSplit(0).equals("quit") ) {
 				this.stop();
 
 			}
@@ -134,11 +137,11 @@ public class Shell {
 					}
 				}
 				else {
-					this.printError("Unknown command " + this.getCmdSplit(2));
+					this.printError("Unknown command " + this.getCmdSplit(1));
 				}
 			}
 			else {
-				this.printError("Unknown command " + this.getCmdSplit(1));
+				this.printError("Unknown command " + this.getCmdSplit(0));
 			}
 		}
 	}
@@ -205,6 +208,8 @@ public class Shell {
     * @return string containing parameter
     */
 	public String getCmdSplit(int index) {
+		if(index >= this.getCmdLength())
+			return null;
 		return this.cmdSplit[index];
 	}
 
@@ -244,6 +249,26 @@ public class Shell {
 		System.out.println("|  |  |___  |  |__    __|  |  |___  |  |  |  |  |  |  |  |  ___|  |");
 		System.out.println("|  |_____   |  |  |__|  |  |______  |  |  |     |__|     |______  |");
 		System.out.println("|_________________|_________________|________|________|______v.1.3|");
+	}
+
+	/**
+	 * print help
+	 */
+	public void printHelp() {
+
+		System.out.println("== GENERAL ==")
+		System.out.println("List all Labirynths: list");
+		System.out.println("Create Labirynth object: new <name> [width] [height]");
+		System.out.println("Print this help: help");
+		System.out.println("Quit: exit/quit");
+		
+		System.out.println("== LABIRYNTH ==")
+		System.out.println("Set Begin/End point: <name> set begin/end <x> <y>");
+		System.out.println("Generate Labirynth: <name> generate [seed]");
+		System.out.println("Solve Labirynth: <name> solve");
+		System.out.println("Print Labirynth: <name> print");
+		System.out.println("Write/Read to/from file: <name> write/read <bitmap/text/binary> <path>")
+			
 	}
 
 	public static void main(String[] args) 
