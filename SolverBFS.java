@@ -13,8 +13,14 @@ implements Solver {
     * @return true if everything went succesfully
     * @throws IncorrectCoordsException if cell index is out of bounds
     */
-    public boolean solve() {
+    public boolean solve() throws
+    UninitializedDataException {
         
+        if(maze.getBegin() == null)
+            throw new UninitializedDataException("Begin cell isn't initialized");
+        if(maze.getEnd() == null)
+            throw new UninitializedDataException("End cell isn't initialized");
+
         LinkedList<Cell> q = new LinkedList<Cell>();
         q.push(maze.getBegin());
         maze.clearVisits();

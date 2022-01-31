@@ -84,7 +84,7 @@ public class Labirynth {
 	 * Solve labirynth
 	 * @return true if everything went succesfully
 	 */
-	public boolean solveLabirynth() {
+	public boolean solveLabirynth() throws UninitializedDataException{
 		Solver mazeSolver = new SolverBFS(this);
 		return mazeSolver.solve();
 	}
@@ -172,9 +172,15 @@ public class Labirynth {
     * @param x x coordinate
     * @param y y coordinate
     */
-	public void setBegin(int x, int y) {
+	public void setBegin(int x, int y) 
+	throws IncorrectCoordsException {
 		reset();
+		if(0 <= 2*x-1 && 2*x-1 < this.grid[0].length &&
+			0 <= 2*y-1 && 2*y-1 < this.grid.length )
 		this.begin = this.grid[2 * x - 1][2 * y - 1];
+		else {
+			throw new IncorrectCoordsException("Incorrect x,y corrds");
+		}
 	}
 	/**
     * Get beginning cell of labirynth
@@ -198,9 +204,14 @@ public class Labirynth {
     * @param x x coordinate
     * @param y y coordinate
     */
-	public void setEnd(int x, int y) {
+	public void setEnd(int x, int y) throws IncorrectCoordsException {
 		reset();
-		this.end = this.grid[2 * x - 1][2 * y - 1];
+		if(0 <= 2*x-1 && 2*x-1 < this.grid[0].length &&
+			0 <= 2*y-1 && 2*y-1 < this.grid.length )
+			this.end = this.grid[2 * x - 1][2 * y - 1];
+		else {
+			throw new IncorrectCoordsException("Incorrect x,y corrds");
+		}
 	}
 	/**
     * Get ending cell of labirynth

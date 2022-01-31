@@ -1,3 +1,3 @@
 interface Solver {
-	public boolean solve();
+	public boolean solve() throws UninitializedDataException;
 }

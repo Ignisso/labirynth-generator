@@ -27,41 +27,61 @@ public class Shell {
 			
 			this.getNextCommand();
 
+			// help
 			if (this.getCmdSplit(0).equals("help")){
 				this.printHelp();
 			}
-			else if(this.getCmdSplit(0).equals("exit") || this.getCmdSplit(0).equals("quit") ) {
+			// exit
+			else if(this.getCmdSplit(0).equals("exit")) {
 				this.stop();
-
 			}
+			// quit
+			else if(this.getCmdSplit(0).equals("quit") ) {
+				this.stop();
+			}
+			// new
 			else if (this.getCmdSplit(0).equals("new")) {
+				// new <name>
 				if(this.getCmdLength() == 2) {
 					this.addLabirynth(this.getCmdSplit(1), new Labirynth());
-						this.printInfo("Succesfully created Labirynth object " + this.getCmdSplit(1));
-				} else if(this.getCmdLength() == 4) {
+					this.printInfo("Succesfully created Labirynth object " + this.getCmdSplit(1));
+				} // new <name> [width] [height]
+				else if(this.getCmdLength() == 4) {
 					this.addLabirynth(this.getCmdSplit(1), new Labirynth(Integer.parseInt(this.getCmdSplit(2)), Integer.parseInt(this.getCmdSplit(3))));
-						this.printInfo("Succesfully created Labirynth object " + this.getCmdSplit(1) + " " + this.getCmdSplit(2) + "x" + this.getCmdSplit(3));
+					this.printInfo("Succesfully created Labirynth object " + this.getCmdSplit(1) + " " + this.getCmdSplit(2) + "x" + this.getCmdSplit(3));
+				} else {
+					this.printError("Wrong ammount of parameters, expected 4, got: " + this.getCmdLength());
 				}
 			}
+			// list
 			else if (this.getCmdSplit(0).equals("list")) {
 				this.printInfo("List of all labirynths:");
 			  	System.out.println(this.getKeys());
 			}
+			// generate
 			else if (this.getKeys().contains(this.getCmdSplit(0))) {
-				if(this.getCmdSplit(1).equals("generate")){
+				// generate
+				if(this.getCmdLength() == 1) {
+					this.printError("You have to add command");
+				}
+				else if(this.getCmdSplit(1).equals("generate")){
 					if(this.getCmdLength() == 2) {
 						if(this.getLabirynth(this.getCmdSplit(0)).generateLabirynth())
 							this.printInfo("Succesfully generated labirynth");
-					} else if(this.getCmdLength() == 3) {
+					} // generate [seed] 
+					else if(this.getCmdLength() == 3) {
 						try {
 							if(this.getLabirynth(this.getCmdSplit(0)).generateLabirynth(Integer.parseInt(this.getCmdSplit(2))))
 								this.printInfo("Succesfully generated labirynth from seed: " + this.getCmdSplit(2));
 						} catch (NumberFormatException e) {
-							this.printError("seed has to be an integer");
-						}
+							this.printError("Seed has to be an integer");
+						} 
+					} else {
+						this.printError("Wrong ammount of parameters, expected 2 or 3, got: " + this.getCmdLength());
 					}
 
 				}
+				// set begin <x> <y>
 				else if(this.getCmdSplit(1).equals("set") && this.getCmdSplit(2).equals("begin"))
 				{
 					try {
@@ -71,8 +91,12 @@ public class Shell {
 					catch (NumberFormatException e) {
 						this.printError("cordinates have to be an integer");
 						
+					} 
+					catch (IncorrectCoordsException e) {
+						this.printError("Wrong x/y coords");
 					}
 				}
+				// set end <x> <y>
 				else if(this.getCmdSplit(1).equals("set") && this.getCmdSplit(2).equals("end")){
 					try {
 						this.getLabirynth(this.getCmdSplit(0)).setEnd(Integer.parseInt(this.getCmdSplit(3)), Integer.parseInt(this.getCmdSplit(4)));
@@ -80,17 +104,35 @@ public class Shell {
 					} 
 					catch (NumberFormatException e)  {
 						this.printError("cordinates have to be an integer");
+					} 
+					catch (IncorrectCoordsException e) {
+						this.printError("Wrong x/y coords");
 					}
 					
 				}
+				// set size <width> <height>
+				else if(this.getCmdSplit(1).equals("set") && this.getCmdSplit(2).equals("size")){
+					try {
+						this.getLabirynth(this.getCmdSplit(0)).setSize(2 * Integer.parseInt(this.getCmdSplit(3)) - 1, 2 *  Integer.parseInt(this.getCmdSplit(4)) - 1);
+						this.printInfo("Succesfully set size of labirynth to: " + this.getCmdSplit(3) + "x" + this.getCmdSplit(4));
+					} 
+					catch (IncorrectSizeException e)  {
+						this.printError("Incorrect size");
+					} 
+					
+				}
+				// solve
 				else if(this.getCmdSplit(1).equals("solve")){
-					if(this.getLabirynth(this.getCmdSplit(0)).solveLabirynth())
-						this.printInfo("Succesfully solved labirynth");
-				
+					try {
+						if(this.getLabirynth(this.getCmdSplit(0)).solveLabirynth())
+							this.printInfo("Succesfully solved labirynth");
+					} catch (UninitializedDataException e ) {
+						this.printError("Begin/End not set");
+					}
 				}
 				else if(this.getCmdSplit(1).equals("write")){
 					if(this.getCmdLength() != 4) {
-						System.out.println("Invalid number of arguments, expected 4, got " + this.getCmdLength() );
+						this.printError("Invalid number of arguments, expected 4, got " + this.getCmdLength() );
 					}
 					else if(this.getCmdSplit(2).equals("bitmap")){
 						if(this.getLabirynth(this.getCmdSplit(0)).writeToBitmap(this.getCmdSplit(3)))
@@ -264,6 +306,7 @@ public class Shell {
 		
 		System.out.println("== LABIRYNTH ==");
 		System.out.println("Set Begin/End point: <name> set begin/end <x> <y>");
+		System.out.println("Set Size: <name> set size <width> <height>");
 		System.out.println("Generate Labirynth: <name> generate [seed]");
 		System.out.println("Solve Labirynth: <name> solve");
 		System.out.println("Print Labirynth: <name> print");

@@ -5,10 +5,19 @@ public class Main {
 		Labirynth rlab = new Labirynth();
 		Labirynth slab = new Labirynth();
 		lab.generateLabirynth();
-		lab.setBegin(3, 3);
-		lab.setEnd(17, 17);
-		lab.solveLabirynth();
-		
+		try {		
+			lab.setBegin(3, 3);
+			lab.setEnd(17, 17);
+		}
+		catch (IncorrectCoordsException e) {
+			System.err.println("Begin/End wrong coords");	
+		}
+		try {
+			lab.solveLabirynth();
+		}
+		catch (UninitializedDataException e) {
+			System.err.println("Begin/End is null");
+		}
 		lab.writeToBitmap("../maze.bmp");
 		lab.writeToBinary("../maze.bin");
 		lab.writeToText("../maze.txt");
