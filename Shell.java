@@ -82,8 +82,13 @@ public class Shell {
 
 				}
 				// set begin <x> <y>
-				else if(this.getCmdSplit(1).equals("set") && this.getCmdSplit(2).equals("begin"))
+				else if(this.getCmdLength() == 5 && this.getCmdSplit(1).equals("set") && this.getCmdSplit(2).equals("begin"))
 				{
+					if(this.getLabirynth(this.getCmdSplit(0)).getWidth() == 0) {
+						this.printError("Size of Labirynth isn't set");
+						continue;
+					}
+
 					try {
 						this.getLabirynth(this.getCmdSplit(0)).setBegin(Integer.parseInt(this.getCmdSplit(3)), Integer.parseInt(this.getCmdSplit(4)));
 						this.printInfo("Succesfully set labirynth begining point to (" + this.getCmdSplit(3) + ", " + this.getCmdSplit(4) + ")");
@@ -97,7 +102,11 @@ public class Shell {
 					}
 				}
 				// set end <x> <y>
-				else if(this.getCmdSplit(1).equals("set") && this.getCmdSplit(2).equals("end")){
+				else if(this.getCmdLength() == 5 && this.getCmdSplit(1).equals("set") && this.getCmdSplit(2).equals("end")){
+					if(this.getLabirynth(this.getCmdSplit(0)).getWidth() == 0) {
+						this.printError("Size of Labirynth isn't set");
+						continue;
+					}
 					try {
 						this.getLabirynth(this.getCmdSplit(0)).setEnd(Integer.parseInt(this.getCmdSplit(3)), Integer.parseInt(this.getCmdSplit(4)));
 						this.printInfo("Succesfully set labirynth ending point to (" + this.getCmdSplit(3) + ", " + this.getCmdSplit(4) + ")");
@@ -111,7 +120,7 @@ public class Shell {
 					
 				}
 				// set size <width> <height>
-				else if(this.getCmdSplit(1).equals("set") && this.getCmdSplit(2).equals("size")){
+				else if(this.getCmdLength() == 5 && this.getCmdSplit(1).equals("set") && this.getCmdSplit(2).equals("size")){
 					try {
 						this.getLabirynth(this.getCmdSplit(0)).setSize(2 * Integer.parseInt(this.getCmdSplit(3)) - 1, 2 *  Integer.parseInt(this.getCmdSplit(4)) - 1);
 						this.printInfo("Succesfully set size of labirynth to: " + this.getCmdSplit(3) + "x" + this.getCmdSplit(4));
