@@ -1,10 +1,10 @@
 # Labirynth
 
 ## Table of contents
-* [General info] (#general-info)
-* [Technologies] (#technologies)
-* [Setup] (#setup)
-* [Features] (#features)
+1. [General info] (#general-info)
+2. [Technologies] (#technologies)
+3. [Setup] (#setup)
+4. [Features] (#features)
 
 
 ## General info
@@ -27,24 +27,22 @@ java -jar Labirynth.jar
 ```
 
 ## Features
+
 - Generate labirynth 
 	- size
 	- seed
-
 - Solve labirynth
 	- starting point
 	- ending point
-
 - Export to file
 	- binary
 	- text
 	- bitmap
-
 - Import from file
 	- binary
 	- text
 	- bitmap
-	
+
 ### To Do:
 - GUI
 - More custiomization during labirynth generation
