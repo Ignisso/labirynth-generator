@@ -191,11 +191,11 @@ public class Shell {
 					}
 				}
 				else {
-					this.printError("Unknown command " + this.getCmdSplit(1));
+					this.printError("Unknown command " + this.getCmdSplit(1) + "\nType 'help' to get help");
 				}
 			}
 			else {
-				this.printError("Unknown command " + this.getCmdSplit(0));
+				this.printError("Unknown command " + this.getCmdSplit(0) + "\nType 'help' to get help");
 			}
 		}
 	}
@@ -203,7 +203,7 @@ public class Shell {
     * Get next command from user
     */
 	public void getNextCommand() {
-		System.out.print("> ");
+		System.out.print("\n> ");
 		this.command = scan.nextLine();
 		this.cmdSplit = command.split(" ");
 	}
@@ -314,8 +314,9 @@ public class Shell {
 		System.out.println("exit					exits from this shell");
 		System.out.println("quit					exit alias");
 		System.out.println("help					prints this manual");
+		System.out.println("list					lists all labirynth objects");
 		System.out.println("new <labirynth name> [width] [height]	creates new labirynth object");
-		System.out.println("use <labirynth name>			enter in labirynth mode\n");
+		System.out.println("use <labirynth name>			creates new empty labirynth object\n");
 		System.out.println("LABIRYNTH MODE");
 		System.out.println("set begin <x> <y>			set begin of labirynth in (x,y)");
 		System.out.println("set end   <x> <y>			set end of labirynth in (x,y)");
